@@ -33,14 +33,14 @@ Säkerhetsscanning med Trivy
 
 Screenshot på pipeline som går igenom:
 
-![Pipeline](./images/pipeline.png)
+(Kommer Snart)
 VM i GCP
 
 När man kör terraform apply skapas en VM i Google Cloud.
 
 Screenshot från GCP Console:
 
-![VM](./images/vm.png)
+(Kommer Snart)
 Säkerhet
 
 Jag har lagt till några enkla säkerhetsåtgärder i startup-scriptet:
