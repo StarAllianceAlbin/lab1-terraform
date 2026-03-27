@@ -1,78 +1,64 @@
-Lab 1 – Terraform VM i Google Cloud
-Beskrivning
+# Terraform IaC – GCP VM Deployment (albin-mansson)
 
-I det här projektet har jag använt Terraform för att skapa en virtuell maskin (VM) i Google Cloud. Tanken är att jobba med Infrastructure as Code, alltså att definiera infrastrukturen i kod istället för att klicka runt i konsolen. Jag har också lagt till en enkel CI-pipeline och några grundläggande säkerhetsinställningar.
+## Vad projektet gör
+Det här projektet använder Terraform för att automatiskt sätta upp en virtuell maskin (VM) i Google Cloud Platform (GCP). 
+Infrastrukturen definieras som kod (IaC) och driftsätts via en GitHub Actions CI/CD-pipeline som automatiskt 
+kör format-kontroll, säkerhetsskanning och validering innan deploy sker. VM:en är konfigurerad med dagliga 
+backups och härdade säkerhetsinställningar för att följa DevSecOps-principer.
 
-Hur man kör projektet
+## Hur man kör
 
-Börja med att initiera Terraform:
+### Förkrav
+- [Terraform](https://developer.hashicorp.com/terraform/downloads) installerat
+- GCP Service Account med rätt behörigheter
+- `gcloud` CLI installerat och autentiserat
 
+### Steg
+
+**1. Initiera Terraform**
+```bash
 terraform init
+```
 
-Kolla att allt ser rätt ut:
+**2. Granska ändringar**
+```bash
+terraform plan \
+  -var="project_id=chas-devsecops-2026" \
+  -var="region=europe-north1" \
+  -var="student_id=albin-mansson"
+```
 
-terraform validate
+**3. Driftsätt infrastrukturen**
+```bash
+terraform apply \
+  -var="project_id=chas-devsecops-2026" \
+  -var="region=europe-north1" \
+  -var="student_id=albin-mansson"
+```
 
-Se vad som kommer skapas:
+## Screenshot – Pipeline som passerar
+<!-- Lägg till din screenshot här -->
+![Pipeline](screenshots/pipeline-success.png)
 
-terraform plan
+## Screenshot – VM i GCP Console
+<!-- Lägg till din screenshot här -->
+![VM i GCP](screenshots/gcp-vm.png)
 
-Applicera ändringarna:
+## Säkerhetsbeslut
 
-terraform apply
+### ufw (Uncomplicated Firewall)
+ufw används för att begränsa nätverkstrafik till VM:en. Endast nödvändiga portar 
+(t.ex. SSH på port 22) är öppna, vilket minskar attackytan avsevärt.
 
-Skriv yes när du blir tillfrågad.
+### fail2ban
+fail2ban övervakar inloggningsförsök och blockerar automatiskt IP-adresser som 
+gör för många misslyckade inloggningsförsök. Detta skyddar mot brute-force-attacker mot SSH.
 
-CI/CD Pipeline
+### Trivy (IaC-skanning)
+Trivy skannar Terraform-koden i CI-pipelinen efter kända säkerhetsproblem och 
+felkonfigurationer innan infrastrukturen driftsätts. Endast CRITICAL och HIGH-sårbarheter 
+stoppar pipelinen.
 
-Jag har satt upp en GitHub Actions pipeline som körs vid push och pull requests. Den gör:
-
-Formatteringskontroll (terraform fmt)
-Validering av Terraform-koden
-Säkerhetsscanning med Trivy
-
-Screenshot på pipeline som går igenom:
-
-(Kommer Snart)
-VM i GCP
-
-När man kör terraform apply skapas en VM i Google Cloud.
-
-Screenshot från GCP Console:
-
-(Kommer Snart)
-Säkerhet
-
-Jag har lagt till några enkla säkerhetsåtgärder i startup-scriptet:
-
-UFW (brandvägg)
-
-Blockerar all inkommande trafik som standard
-Tillåter bara SSH
-
-Fail2Ban
-
-Skyddar mot brute force-attacker
-Blockerar IP-adresser efter flera misslyckade login
-
-Unattended Upgrades
-
-Installerar säkerhetsuppdateringar automatiskt
-
-Tanken är att få en grundläggande “secure by default”-setup utan att göra det för avancerat.
-
-Backup
-
-Jag har också lagt till en backup policy:
-
-Dagliga snapshots
-Sparas i 7 dagar
-
-Det gör att man kan återställa om något går fel.
-
-Övrigt
-terraform.tfvars är inte med i Git (innehåller känslig info)
-
-Inloggning till GCP görs via:
-
-gcloud auth application-default login
+### Principen om minsta privilegium
+Service accounten som används av GitHub Actions har endast de behörigheter som krävs 
+för att skapa och hantera de specifika resurserna i projektet.
