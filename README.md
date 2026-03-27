@@ -36,13 +36,6 @@ terraform apply \
   -var="student_id=albin-mansson"
 ```
 
-## Screenshot – Pipeline som passerar
-<!-- Lägg till din screenshot här -->
-![Pipeline](screenshots/pipeline-success.png)
-
-## Screenshot – VM i GCP Console
-<!-- Lägg till din screenshot här -->
-![VM i GCP](screenshots/gcp-vm.png)
 
 ## Säkerhetsbeslut
 
