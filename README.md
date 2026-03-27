@@ -1,4 +1,4 @@
-# Terraform IaC – GCP VM Deployment (albin-mansson)
+# Terraform IaC – GCP VM Deployment 
 
 ## Vad projektet gör
 Det här projektet använder Terraform för att automatiskt sätta upp en virtuell maskin (VM) i Google Cloud Platform (GCP). 
