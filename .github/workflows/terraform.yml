@@ -36,7 +36,7 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-deploy:
+  deploy:
     runs-on: ubuntu-latest
     needs: [lint, security, validate]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
